@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIBE | Wear the vibe</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        /* Buscador Flotante Global */
+        .floating-search {
+            position: fixed;
+            top: -80px; /* Oculto arriba por defecto */
+            left: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.98);
+            padding: 15px 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            transition: top 0.4s ease;
+        }
+        .floating-search.visible {
+            top: 0; /* Aparece al hacer scroll */
+        }
+        .buscador-global {
+            width: 100%;
+            max-width: 600px;
+            padding: 12px;
+            border: 1px solid #000;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        /* Filtros */
+        .filtros-container {
+            text-align: center; margin-bottom: 2.5rem; padding: 0 20px;
+        }
+        .botones-filtro {
+            display: flex; justify-content: center; flex-wrap: wrap; gap: 10px;
+        }
+        .btn-filtro {
+            background: transparent; border: 1px solid #000;
+            padding: 8px 15px; cursor: pointer; font-size: 0.8rem;
+            transition: all 0.3s;
+        }
+        .btn-filtro:hover, .btn-filtro.activo {
+            background: #000; color: #fff;
+        }
+        
+        /* Notificaciones Toast */
+        #toast-container {
+            position: fixed; bottom: 20px; right: 20px;
+            z-index: 9999; display: flex; flex-direction: column; gap: 10px;
+        }
+        .toast {
+            background: #000; color: #fff; padding: 15px 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            font-size: 0.9rem; text-transform: uppercase;
+            animation: fadeIn 0.3s, fadeOut 0.3s 2.7s;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes fadeOut { from { opacity: 1; transform: translateX(0); } to { opacity: 0; transform: translateX(20px); } }
+    </style>
+</head>
+<body>
+
+    <div id="floating-search-container" class="floating-search">
+        <input type="text" class="buscador-global" id="buscador-input" placeholder="BUSCAR PRODUCTOS..." onkeyup="buscarProductosGlobal(this.value)">
+    </div>
+
+    <header class="navbar">
+        <div class="nav-left">
+            <a href="#" onclick="showPage('home-page')">INICIO</a>
+            <a href="#seccion-mujer" onclick="showPage('home-page')">MUJER</a>
+            <a href="#seccion-hombre" onclick="showPage('home-page')">HOMBRE</a>
+        </div>
+        
+        <div class="logo-container">
+            <a href="#" onclick="showPage('home-page')" class="logo-text">V I B E</a>
+            <span class="slogan-nav">wear the vibe</span>
+        </div>
+
+        <div class="nav-right">
+            <a href="#" id="auth-nav-link" onclick="showPage('auth-page')">INICIAR SESIÓN</a>
+            <button id="cart-btn" class="cart-button" onclick="showPage('cart-page')">
+                CESTA (<span id="cart-count">0</span>)
+            </button>
+        </div>
+    </header>
+
+    <div id="home-page" class="page-section">
+        <section class="hero">
+            <div class="hero-text">
+                <h1>V I B E</h1>
+                <p>WEAR THE VIBE.</p>
+                <a href="#seccion-mujer" class="btn-primary">VER COLECCIÓN</a>
+            </div>
+        </section>
+
+        <main id="seccion-mujer" class="catalog-section">
+            <h2 class="section-title">COLECCIÓN MUJER</h2>
+            
+            <div class="filtros-container">
+                <div class="botones-filtro">
+                    <button class="btn-filtro activo" onclick="filtrarCategoria('todo', this, 'seccion-mujer')">TODO</button>
+                    <button class="btn-filtro" onclick="filtrarCategoria('superior', this, 'seccion-mujer')">SUPERIOR</button>
+                    <button class="btn-filtro" onclick="filtrarCategoria('inferior', this, 'seccion-mujer')">INFERIOR</button>
+                    <button class="btn-filtro" onclick="filtrarCategoria('vestidos', this, 'seccion-mujer')">VESTIDOS</button>
+                </div>
+            </div>
+
+            <div class="products-grid" id="grid-mujer">
+                <div class="product-card" data-id="1" data-name="BLAZER FLUIDO NEGRO" data-price="1299" data-category="superior" data-img1="mujer/sup1-1.jpg" data-img2="mujer/sup1-2.jpg" data-img3="mujer/sup1-3.jpg">
+                    <div class="img-container">
+                        <img src="mujer/sup1-1.jpg" alt="Blazer">
+                    </div>
+                    <div class="product-info">
+                        <h3>BLAZER FLUIDO NEGRO</h3>
+                        <p class="price">$1,299.00 MXN</p>
+                        <button class="btn-add-cart">AÑADIR A LA CESTA</button>
+                    </div>
+                </div>
+                
+                <div class="product-card" data-id="2" data-name="CAMISA ESTRUCTURADA MANGA LARGA" data-price="799" data-category="superior" data-img1="mujer/sup2-1.jpg" data-img2="mujer/sup2-2.jpg" data-img3="mujer/sup2-3.jpg">
+                    <div class="img-container">
+                        <img src="mujer/sup2-1.jpg" alt="Camisa">
+                    </div>
+                    <div class="product-info">
+                        <h3>CAMISA ESTRUCTURADA MANGA LARGA</h3>
+                        <p class="price">$799.00 MXN</p>
+                        <button class="btn-add-cart">AÑADIR A LA CESTA</button>
+                    </div>
+                </div>
+                
+                <div class="product-card" data-id="3" data-name="PANTALÓN CARGO" data-price="999" data-category="inferior" data-img1="mujer/inf1-1.jpg" data-img2="mujer/inf1-2.jpg" data-img3="mujer/inf1-3.jpg">
+                    <div class="img-container">
+                        <img src="mujer/inf1-1.jpg" alt="Pantalón">
+                    </div>
+                    <div class="product-info">
+                        <h3>PANTALÓN CARGO</h3>
+                        <p class="price">$999.00 MXN</p>
+                        <button class="btn-add-cart">AÑADIR A LA CESTA</button>
+                    </div>
+                </div>
+                
+                <div class="product-card" data-id="4" data-name="VESTIDO MIDI DE TIRANTES" data-price="899" data-category="vestidos" data-img1="mujer/ves1-1.jpg" data-img2="mujer/ves1-2.jpg" data-img3="mujer/ves1-3.jpg">
+                    <div class="img-container">
+                        <img src="mujer/ves1-1.jpg" alt="Vestido">
+                    </div>
+                    <div class="product-info">
+                        <h3>VESTIDO MIDI DE TIRANTES</h3>
+                        <p class="price">$899.00 MXN</p>
+                        <button class="btn-add-cart">AÑADIR A LA CESTA</button>
+                    </div>
+                </div>
+
+                <div class="product-card" data-id="5" data-name="TOP CROP BÁSICO" data-price="499" data-category="superior" data-img1="mujer/sup3-1.jpg" data-img2="mujer/sup3-2.jpg" data-img3="mujer/sup3-3.jpg">
+                    <div class="img-container">
+                        <img src="mujer/sup3-1.jpg" alt="Top Crop">
+                    </div>
+                    <div class="product-info">
+                        <h3>TOP CROP BÁSICO</h3>
+                        <p class="price">$499.00 MXN</p>
+                        <button class="btn-add-cart">AÑADIR A LA CESTA</button>
+                    </div>
+                </div>
+
+                <div class="product-card" data-id="6" data-name="FALDA MIDI ACANALADA" data-price="899" data-category="inferior" data-img1="mujer/inf2-1.jpg" data-img2="mujer/inf2-2.jpg" data-img3="mujer/inf2-3.jpg">
+                    <div class="img-container">
+                        <img src="mujer/inf2-1.jpg" alt="Falda Plisada">
+                    </div>
+                    <div class="product-info">
+                        <h3>FALDA MIDI ACANALADA</h3>
+                        <p class="price">$899.00 MXN</p>
+                        <button class="btn-add-cart">AÑADIR A LA CESTA</button>
+                    </div>
+                </div>
+
+                <div class="product-card" data-id="7" data-name="CHAQUETA TIPO BIKER EN DENIM" data-price="1199" data-category="superior" data-img1="mujer/sup4-1.jpg" data-img2="mujer/sup4-2.jpg" data-img3="mujer/sup4-3.jpg">
+                    <div class="img-container">
+                        <img src="mujer/sup4-1.jpg" alt="Chaqueta Denim">
+                    </div>
+                    <div class="product-info">
+                        <h3>CHAQUETA TIPO BIKER EN DENIM</h3>
+                        <p class="price">$1,199.00 MXN</p>
+                        <button class="btn-add-cart">AÑADIR A LA CESTA</button>
+                    </div>
+                </div>
+
+                <div class="product-card" data-id="8" data-name="VESTIDO TEJIDO" data-price="1599" data-category="vestidos" data-img1="mujer/ves2-1.jpg" data-img2="mujer/ves2-2.jpg" data-img3="mujer/ves2-3.jpg">
+                    <div class="img-container">
+                        <img src="mujer/ves2-1.jpg" alt="Vestido Noche">
+                    </div>
+                    <div class="product-info">
+                        <h3>VESTIDO TEJIDO</h3>
+                        <p class="price">$1,599.00 MXN</p>
+                        <button class="btn-add-cart">AÑADIR A LA CESTA</button>
+                    </div>
+                </div>
+
+                <div class="product-card" data-id="9" data-name="JEANS WIDE LEG" data-price="1099" data-category="inferior" data-img1="mujer/inf3-1.jpg" data-img2="mujer/inf3-2.jpg" data-img3="mujer/inf3-3.jpg">
+                    <div class="img-container">
+                        <img src="mujer/inf3-1.jpg" alt="Jeans Wide Leg">
+                    </div>
+                    <div class="product-info">
+                        <h3>JEANS WIDE LEG</h3>
+                        <p class="price">$1,099.00 MXN</p>
+                        <button class="btn-add-cart">AÑADIR A LA CESTA</button>
+                    </div>
+                </div>
+
+                <div class="product-card" data-id="10" data-name="SUÉTER DE PUNTO CON ESCOTE V" data-price="899" data-category="superior" data-img1="mujer/sup5-1.jpg" data-img2="mujer/sup5-2.jpg" data-img3="mujer/sup5-3.jpg">
+                    <div class="img-container">
+                        <img src="mujer/sup5-1.jpg" alt="Suéter Punto">
+                    </div>
+                    <div class="product-info">
+                        <h3>SUÉTER DE PUNTO CON ESCOTE V</h3>
+                        <p class="price">$899.00 MXN</p>
+                        <button class="btn-add-cart">AÑADIR A LA CESTA</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <main id="seccion-hombre" class="catalog-section" style="padding-top: 0;">
+            <h2 class="section-title">COLECCIÓN HOMBRE</h2>
+            
+            <div class="filtros-container">
+                <div class="botones-filtro">
+                    <button class="btn-filtro activo" onclick="filtrarCategoria('todo', this, 'seccion-hombre')">TODO</button>
+                    <button class="btn-filtro" onclick="filtrarCategoria('superior', this, 'seccion-hombre')">SUPERIOR</button>
+                    <button class="btn-filtro" onclick="filtrarCategoria('inferior', this, 'seccion-hombre')">INFERIOR</button>
+                </div>
+            </div>
+
+            <div class="products-grid" id="grid-hombre">
+                <div class="product-card" data-id="11" data-name="CHAQUETA SHEARLING DE AVIADOR" data-price="1899" data-category="superior" data-img1="hombre/sup1-1.jpg" data-img2="hombre/sup1-2.jpg" data-img3="hombre/sup1-3.jpg">
+                    <div class="img-container">
+                        <img src="hombre/sup1-1.jpg" alt="Chamarra Cuero">
+                    </div>
+                    <div class="product-info">
+                        <h3>CHAQUETA SHEARLING DE AVIADOR</h3>
+                        <p class="price">$1,899.00 MXN</p>
+                        <button class="btn-add-cart">AÑADIR A LA CESTA</button>
+                    </div>
+                </div>
+                
+                <div class="product-card" data-id="12" data-name="PLAYERA OVERSIZE BÁSICA" data-price="399" data-category="superior" data-img1="hombre/sup2-1.jpg" data-img2="hombre/sup2-2.jpg" data-img3="hombre/sup2-3.jpg">
+                    <div class="img-container">
+                        <img src="hombre/sup2-1.jpg" alt="Playera">
+                    </div>
+                    <div class="product-info">
+                        <h3>PLAYERA OVERSIZE BÁSICA</h3>
+                        <p class="price">$399.00 MXN</p>
+                        <button class="btn-add-cart">AÑADIR A LA CESTA</button>
+                    </div>
+                </div>
+                
+                <div class="product-card" data-id="13" data-name="JEANS LOOSE TONO NEGRO" data-price="899" data-category="inferior" data-img1="hombre/inf1-1.jpg" data-img2="hombre/inf1-2.jpg" data-img3="hombre/inf1-3.jpg">
+                    <div class="img-container">
+                        <img src="hombre/inf1-1.jpg" alt="Jeans">
+                    </div>
+                    <div class="product-info">
+                        <h3>JEANS LOOSE TONO NEGRO</h3>
+                        <p class="price">$899.00 MXN</p>
+                        <button class="btn-add-cart">AÑADIR A LA CESTA</button>
+                    </div>
+                </div>
+                
+                <div class="product-card" data-id="14" data-name="HOODIE OVERSIZE" data-price="750" data-category="superior" data-img1="hombre/sup3-1.jpg" data-img2="hombre/sup3-2.jpg" data-img3="hombre/sup3-3.jpg">
+                    <div class="img-container">
+                        <img src="hombre/sup3-1.jpg" alt="Sudadera">
+                    </div>
+                    <div class="product-info">
+                        <h3>HOODIE OVERSIZE</h3>
+                        <p class="price">$750.00 MXN</p>
+                        <button class="btn-add-cart">AÑADIR A LA CESTA</button>
+                    </div>
+                </div>
+
+                <div class="product-card" data-id="15" data-name="PANTALÓN CARGO UTILITARIO" data-price="999" data-category="inferior" data-img1="hombre/inf2-1.jpg" data-img2="hombre/inf2-2.jpg" data-img3="hombre/inf2-3.jpg">
+                    <div class="img-container">
+                        <img src="hombre/inf2-1.jpg" alt="Pantalón Cargo">
+                    </div>
+                    <div class="product-info">
+                        <h3>PANTALÓN CARGO</h3>
+                        <p class="price">$999.00 MXN</p>
+                        <button class="btn-add-cart">AÑADIR A LA CESTA</button>
+                    </div>
+                </div>
+
+                <div class="product-card" data-id="16" data-name="CAMISA EN EFECTO LINO" data-price="899" data-category="superior" data-img1="hombre/sup4-1.jpg" data-img2="hombre/sup4-2.jpg" data-img3="hombre/sup4-3.jpg">
+                    <div class="img-container">
+                        <img src="hombre/sup4-1.jpg" alt="Camisa Lino">
+                    </div>
+                    <div class="product-info">
+                        <h3>CAMISA EN EFECTO LINO</h3>
+                        <p class="price">$899.00 MXN</p>
+                        <button class="btn-add-cart">AÑADIR A LA CESTA</button>
+                    </div>
+                </div>
+
+                <div class="product-card" data-id="17" data-name="BERMUDA CHINO BÁSICO" data-price="599" data-category="inferior" data-img1="hombre/inf3-1.jpg" data-img2="hombre/inf3-2.jpg" data-img3="hombre/inf3-3.jpg">
+                    <div class="img-container">
+                        <img src="hombre/inf3-1.jpg" alt="Shorts">
+                    </div>
+                    <div class="product-info">
+                        <h3>BERMUDA CHINO BÁSICO</h3>
+                        <p class="price">$599.00 MXN</p>
+                        <button class="btn-add-cart">AÑADIR A LA CESTA</button>
+                    </div>
+                </div>
+
+                <div class="product-card" data-id="18" data-name="PLAYERA RELAXED BORDADA" data-price="1199" data-category="superior" data-img1="hombre/sup5-1.jpg" data-img2="hombre/sup5-2.jpg" data-img3="hombre/sup5-3.jpg">
+                    <div class="img-container">
+                        <img src="hombre/sup5-1.jpg" alt="Chaleco">
+                    </div>
+                    <div class="product-info">
+                        <h3>PLAYERA RELAXED BORDADA/h3>
+                        <p class="price">$499.00 MXN</p>
+                        <button class="btn-add-cart">AÑADIR A LA CESTA</button>
+                    </div>
+                </div>
+
+                <div class="product-card" data-id="19" data-name="JOGGER STRAIGHT" data-price="699" data-category="inferior" data-img1="hombre/inf4-1.jpg" data-img2="hombre/inf4-2.jpg" data-img3="hombre/inf4-3.jpg">
+                    <div class="img-container">
+                        <img src="hombre/inf4-1.jpg" alt="Jogger">
+                    </div>
+                    <div class="product-info">
+                        <h3>JOGGER STRAIGHT</h3>
+                        <p class="price">$699.00 MXN</p>
+                        <button class="btn-add-cart">AÑADIR A LA CESTA</button>
+                    </div>
+                </div>
+
+                <div class="product-card" data-id="20" data-name="SUÉTER CON ACABADO TEJIDO" data-price="999" data-category="superior" data-img1="hombre/sup6-1.jpg" data-img2="hombre/sup6-2.jpg" data-img3="hombre/sup6-3.jpg">
+                    <div class="img-container">
+                        <img src="hombre/sup6-1.jpg" alt="Suéter Cuello Alto">
+                    </div>
+                    <div class="product-info">
+                        <h3>SUÉTER CON ACABADO TEJIDO</h3>
+                        <p class="price">$999.00 MXN</p>
+                        <button class="btn-add-cart">AÑADIR A LA CESTA</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="cart-page" class="page-section hidden">
+        <div class="page-container">
+            <h2 class="page-title">TU CESTA</h2>
+            <div class="cart-layout">
+                <div id="cart-items-container" class="cart-items-list">
+                    </div>
+                <div class="cart-summary">
+                    <h3>RESUMEN DEL PEDIDO</h3>
+                    <div class="total-line">
+                        <span>TOTAL</span>
+                        <span>$<span id="cart-total-value">0.00</span> MXN</span>
+                    </div>
+                    <p class="tax-info">* Los impuestos están incluidos.</p>
+                    <button id="btn-checkout" class="btn-primary w-100">PROCESAR COMPRA</button>
+                    <button class="btn-secondary w-100" onclick="showPage('home-page')">SEGUIR COMPRANDO</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="auth-page" class="page-section hidden">
+        <div class="page-container auth-layout">
+            <div class="auth-box">
+                <h2>INICIAR SESIÓN</h2>
+                <form id="login-form" class="auth-form">
+                    <input type="email" id="login-email" required placeholder="E-MAIL">
+                    <input type="password" id="login-password" required placeholder="CONTRASEÑA">
+                    <button type="submit" class="btn-primary w-100">ENTRAR</button>
+                </form>
+            </div>
+            <div class="auth-box auth-divider">
+                <h2>REGÍSTRATE</h2>
+                <p>Crea una cuenta para realizar compras, rastrear tus pedidos y guardar tus artículos favoritos.</p>
+                <form id="register-form" class="auth-form">
+                    <input type="text" id="reg-name" required placeholder="NOMBRE COMPLETO">
+                    <input type="email" id="reg-email" required placeholder="E-MAIL">
+                    <input type="password" id="reg-password" required placeholder="CONTRASEÑA">
+                    <button type="submit" class="btn-primary w-100">CREAR CUENTA</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="shipping-page" class="page-section hidden">
+        <div class="page-container">
+            <h2 class="page-title">ENVÍOS Y DEVOLUCIONES</h2>
+            <div style="max-width: 800px; line-height: 2;">
+                <p><strong>Envíos:</strong> Realizamos envíos a toda la República Mexicana. Tiempo estimado de entrega: 3-5 días hábiles.</p>
+                <p><strong>Devoluciones:</strong> Tienes 30 días naturales después de recibir tu compra para realizar cambios o devoluciones sin costo. Los artículos deben estar en su empaque original.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="size-guide-page" class="page-section hidden">
+        <div class="page-container">
+            <h2 class="page-title">GUÍA DE TALLAS</h2>
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; text-align: center;">
+                    <tr style="border-bottom: 2px solid #000;">
+                        <th style="padding: 1rem;">TALLA</th>
+                        <th style="padding: 1rem;">PECHO (CM)</th>
+                        <th style="padding: 1rem;">CINTURA (CM)</th>
+                    </tr>
+                    <tr>
+                        <td style="padding: 1rem;">S</td>
+                        <td style="padding: 1rem;">90-95</td>
+                        <td style="padding: 1rem;">70-75</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 1rem;">M</td>
+                        <td style="padding: 1rem;">96-101</td>
+                        <td style="padding: 1rem;">76-81</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 1rem;">L</td>
+                        <td style="padding: 1rem;">102-105</td>
+                        <td style="padding: 1rem;">84-87</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 1rem;">XL</td>
+                        <td style="padding: 1rem;">108-110</td>
+                        <td style="padding: 1rem;">90-92</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="contact-page" class="page-section hidden">
+        <div class="page-container">
+            <h2 class="page-title">CONTACTO Y UBICACIÓN</h2>
+            <div class="auth-layout">
+                <div class="auth-box">
+                    <p style="margin-bottom: 2rem;">¿Tienes dudas? Déjanos un mensaje y te responderemos a la brevedad.</p>
+                    <form class="auth-form">
+                        <input type="text" placeholder="NOMBRE" required>
+                        <input type="email" placeholder="E-MAIL" required>
+                        <textarea placeholder="MENSAJE" style="width: 100%; height: 100px; padding: 1rem; border: 1px solid #ddd;"></textarea>
+                        <button type="submit" class="btn-primary w-100" style="margin-top: 1rem;">ENVIAR</button>
+                    </form>
+                </div>
+                <div class="auth-box auth-divider">
+                    <h3>VISÍTANOS</h3>
+                    <p>Blvd. Miguel Alemán 1207, El Félix, Constitución, 35158 Lerdo, Dgo.</p>
+                    <div class="map-container" style="margin-top: 2rem; border: 1px solid #eee;">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3599.7469721325842!2d-103.5192649!3d25.546803999999998!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x868fd8f4bfffd7fd%3A0x7794ad469faac4b2!2sBlvd.%20Miguel%20Alem%C3%A1n%201207%2C%20El%20F%C3%A9lix%2C%20Constituci%C3%B3n%2C%2035158%20Lerdo%2C%20Dgo.!5e0!3m2!1ses-419!2smx!4v1779503086673!5m2!1ses-419!2smx" width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-producto" class="modal">
+        <div class="modal-contenido">
+            <span class="cerrar-modal" onclick="cerrarProducto()">×</span>
+            
+            <div class="producto-detalle">
+                <div class="carrusel-galeria">
+                    <img id="modal-img-principal" src="" alt="Producto">
+                    <div class="miniaturas" id="modal-miniaturas">
+                        </div>
+                </div>
+
+                <div class="info-producto">
+                    <h1 id="modal-titulo">Nombre</h1>
+                    <p class="precio" id="modal-precio">$0.00 MXN</p>
+                    <p class="descripcion" style="text-transform: none; color: #555; line-height: 1.5; margin-bottom: 2rem;">
+                        Lleva la vibra a todos lados. Corte relajado y diseño minimalista para un look limpio y versátil. Materiales premium seleccionados para máxima comodidad.
+                    </p>
+                    <button id="modal-btn-agregar" class="btn-primary w-100">AÑADIR A LA CESTA</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-col">
+                <h4>AYUDA</h4>
+                <a href="javascript:void(0)" onclick="showPage('shipping-page')">Envíos y devoluciones</a>
+                <a href="javascript:void(0)" onclick="showPage('size-guide-page')">Guía de tallas</a>
+                <a href="javascript:void(0)" onclick="showPage('contact-page')">Contacto</a>
+            </div>
+            <div class="footer-col">
+                <h4>LOCALIZADOR</h4>
+                <p>Blvd. Miguel Alemán 1207, El Félix, Constitución, 35158.</p>
+                <p>Lerdo, Durango.</p>
+                <a href="javascript:void(0)" onclick="showPage('contact-page')" style="text-decoration: underline;">Ver mapa</a>
+            </div>
+        </div>
+    </footer>
+
+    <div id="toast-container"></div>
+
+    <script src="script.js"></script>
+
+    <script>
+        window.addEventListener('scroll', function() {
+            const searchContainer = document.getElementById('floating-search-container');
+            // Muestra el buscador al bajar más de 150px
+            if (window.scrollY > 150) {
+                searchContainer.classList.add('visible');
+            } else {
+                searchContainer.classList.remove('visible');
+            }
+        });
+    </script>
+</body>
+</html>
