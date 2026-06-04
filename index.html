@@ -84,7 +84,7 @@
 
         <div class="nav-right">
             <a href="#" id="auth-nav-link" onclick="showPage('auth-page')">INICIAR SESIÓN</a>
-            <button id="cart-btn" class="cart-button" onclick="showPage('cart-page')">
+            <button id="cart-btn" class="cart-button">
                 CESTA (<span id="cart-count">0</span>)
             </button>
         </div>
@@ -313,12 +313,12 @@
                     </div>
                 </div>
 
-                <div class="product-card" data-id="18" data-name="PLAYERA RELAXED BORDADA" data-price="1199" data-category="superior" data-img1="hombre/sup5-1.jpg" data-img2="hombre/sup5-2.jpg" data-img3="hombre/sup5-3.jpg">
+                <div class="product-card" data-id="18" data-name="PLAYERA RELAXED BORDADA" data-price="499" data-category="superior" data-img1="hombre/sup5-1.jpg" data-img2="hombre/sup5-2.jpg" data-img3="hombre/sup5-3.jpg">
                     <div class="img-container">
                         <img src="hombre/sup5-1.jpg" alt="Chaleco">
                     </div>
                     <div class="product-info">
-                        <h3>PLAYERA RELAXED BORDADA/h3>
+                        <h3>PLAYERA RELAXED BORDADA</h3>
                         <p class="price">$499.00 MXN</p>
                         <button class="btn-add-cart">AÑADIR A LA CESTA</button>
                     </div>
@@ -353,8 +353,7 @@
         <div class="page-container">
             <h2 class="page-title">TU CESTA</h2>
             <div class="cart-layout">
-                <div id="cart-items-container" class="cart-items-list">
-                    </div>
+                <div id="cart-items-container" class="cart-items-list"></div>
                 <div class="cart-summary">
                     <h3>RESUMEN DEL PEDIDO</h3>
                     <div class="total-line">
@@ -364,6 +363,37 @@
                     <p class="tax-info">* Los impuestos están incluidos.</p>
                     <button id="btn-checkout" class="btn-primary w-100">PROCESAR COMPRA</button>
                     <button class="btn-secondary w-100" onclick="showPage('home-page')">SEGUIR COMPRANDO</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="checkout-page" class="page-section hidden">
+        <div class="page-container">
+            <h2 class="page-title">DETALLES DE PAGO</h2>
+            <div class="auth-layout" style="max-width: 500px; margin: 0 auto;">
+                <div class="auth-box">
+                    <form id="payment-form" class="auth-form" onsubmit="procesarPagoSimulado(event)">
+                        <label style="font-size: 0.8rem; letter-spacing: 1px; display: block; margin-bottom: 5px;">TITULAR DE LA TARJETA</label>
+                        <input type="text" id="card-name" required placeholder="NOMBRE COMO APARECE EN LA TARJETA">
+                        
+                        <label style="font-size: 0.8rem; letter-spacing: 1px; display: block; margin-top: 15px; margin-bottom: 5px;">NÚMERO DE TARJETA</label>
+                        <input type="text" id="card-number" required maxlength="16" placeholder="16 DÍGITOS" pattern="\d{16}" title="Introduce los 16 dígitos de la tarjeta sin espacios">
+                        
+                        <div style="display: flex; gap: 15px; margin-top: 15px;">
+                            <div style="flex: 1;">
+                                <label style="font-size: 0.8rem; letter-spacing: 1px; display: block; margin-bottom: 5px;">EXPIRACIÓN</label>
+                                <input type="text" id="card-expiry" required placeholder="MM/AA" maxlength="5" pattern="(0[1-2]|1[0-2])\/\d{2}" title="Formato válido MM/AA">
+                            </div>
+                            <div style="flex: 1;">
+                                <label style="font-size: 0.8rem; letter-spacing: 1px; display: block; margin-bottom: 5px;">CVV</label>
+                                <input type="password" id="card-cvv" required maxlength="3" placeholder="000" pattern="\d{3}" title="Código de seguridad de 3 dígitos">
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn-primary w-100" style="margin-top: 2rem;">CONFIRMAR Y PAGAR</button>
+                        <button type="button" class="btn-secondary w-100" onclick="showPage('cart-page')">REGRESAR A LA CESTA</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -468,13 +498,12 @@
             <div class="producto-detalle">
                 <div class="carrusel-galeria">
                     <img id="modal-img-principal" src="" alt="Producto">
-                    <div class="miniaturas" id="modal-miniaturas">
-                        </div>
+                    <div class="miniaturas" id="modal-miniaturas"></div>
                 </div>
 
                 <div class="info-producto">
                     <h1 id="modal-titulo">Nombre</h1>
-                    <p class="precio" id="modal-precio">$0.00 MXN</p>
+                    <p class="price" id="modal-precio">$0.00 MXN</p>
                     <p class="descripcion" style="text-transform: none; color: #555; line-height: 1.5; margin-bottom: 2rem;">
                         Lleva la vibra a todos lados. Corte relajado y diseño minimalista para un look limpio y versátil. Materiales premium seleccionados para máxima comodidad.
                     </p>
@@ -508,7 +537,6 @@
     <script>
         window.addEventListener('scroll', function() {
             const searchContainer = document.getElementById('floating-search-container');
-            // Muestra el buscador al bajar más de 150px
             if (window.scrollY > 150) {
                 searchContainer.classList.add('visible');
             } else {
